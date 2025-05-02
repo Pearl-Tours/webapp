@@ -1,13 +1,14 @@
-from fastapi import FastAPI,Request,Form,Depends
-from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
-from sqlalchemy.orm import Session
-from .database import get_db,engine
-from .models import Name,Base
-Base.metadata.create_all(bind=engine)
-app=FastAPI()
-pages=Jinja2Templates(directory="app/pages")
-@app.get("/")
-async def root(request:Request):
-    success=request.query_params.get("success")
-    return pages.TemplateResponse("index.html",{"request":request,"success":success=="true"})
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from .db.db import init_db
+
+app = FastAPI()
+
+init_db()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="pages")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
