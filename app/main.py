@@ -1,14 +1,12 @@
+# app/main.py
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from .db.db import init_db
+from app.api.routes import router as api_router
+from app.utils.static import static_files
 
 app = FastAPI()
 
-init_db()
+# Include API routes
+app.include_router(api_router)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="pages")
-
-@app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+# Mount static files
+static_files(app)
