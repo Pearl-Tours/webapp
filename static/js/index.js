@@ -1,49 +1,38 @@
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-const navItems = document.querySelectorAll('.nav-links li');
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleButton = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const linkItems = document.querySelectorAll('.nav-links li');
 
-hamburger.addEventListener('click', () => {
-    // Toggle nav
-    navLinks.classList.toggle('nav-active');
-    
-    // Animate links
-    navItems.forEach((link, index) => {
-        if (link.style.animation) {
-            link.style.animation = '';
+    // Toggle side navigation
+    toggleButton.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+
+        // Animate links when menu opens
+        if (navLinks.classList.contains('active')) {
+            linkItems.forEach((link, index) => {
+                link.style.transitionDelay = `${index * 0.05}s`;
+                link.style.opacity = '1';
+                link.style.transform = 'translateX(0)';
+            });
         } else {
-            link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
-        }
-    });
-    
-    // Hamburger animation
-    hamburger.classList.toggle('toggle');
-});
-
-// Close mobile menu when clicking on a link
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        if (window.innerWidth <= 1024) {
-            navLinks.classList.remove('nav-active');
-            hamburger.classList.remove('toggle');
-            navItems.forEach(link => {
-                link.style.animation = '';
+            linkItems.forEach((link) => {
+                link.style.transitionDelay = '0s';
+                link.style.opacity = '0';
+                link.style.transform = 'translateX(-20px)';
             });
         }
     });
-});
 
-// Button click handlers
-document.querySelector('.login-btn').addEventListener('click', () => {
-    alert('Login button clicked!');
-    // Add your login functionality here
-});
-
-document.querySelector('.signup-btn').addEventListener('click', () => {
-    alert('Sign Up button clicked!');
-    // Add your signup functionality here
-});
-
-document.querySelector('.donate-btn').addEventListener('click', () => {
-    alert('Donate button clicked!');
-    // Add your donation functionality here
+    // Close nav when a link is clicked
+    linkItems.forEach(link => {
+        const anchor = link.querySelector('a');
+        anchor.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            linkItems.forEach((item) => {
+                item.style.transitionDelay = '0s';
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+            });
+        });
+    });
 });
